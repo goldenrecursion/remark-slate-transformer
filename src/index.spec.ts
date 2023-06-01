@@ -13,8 +13,11 @@ import {
   slateToRemark,
   remarkToSlateLegacy,
   slateToRemarkLegacy,
+  remarkToGoldenSlate,
+  mapGoldenSlateCiteIDs,
 } from ".";
 import { Value } from "slate_legacy";
+import { GoldenNode } from "./plugins/remark-to-golden-slate";
 
 const FIXTURE_PATH = "../fixtures";
 
@@ -264,5 +267,596 @@ describe("issues", () => {
     expect(slateTree).toMatchSnapshot();
     const slateTreeWithSpace = toSlateProcessor.processSync(" ").result;
     expect(slateTreeWithSpace).toMatchSnapshot();
+  });
+});
+
+describe("slate to Golden slate", () => {
+  const md = ` ## Overview
+
+Phone.com is a company that specializes in providing VoIP, video conferencing, and telecommunications services to small- and medium-sized enterprises [(15319178)](#industry) [(15319179)](#industry). Founded in 2007 by Ari Rabban and Michael Mann [(22888559)](#founded_date) [(74313877)](#founder) [(74313885)](#founder), the company is currently active and operates with a B2C business model [(73385379)](#is_a) [(14483190)](#company_operating_status) [(14536555)](#b2x).`;
+  const slate = [
+    {
+      object: "block",
+      type: "heading",
+      nodes: [
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: "Overview",
+              marks: [],
+            },
+          ],
+        },
+      ],
+      data: {},
+    },
+    {
+      object: "block",
+      type: "paragraph",
+      nodes: [
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: "Phone.com is a company that specializes in providing VoIP, video conferencing, and telecommunications services to small- and medium-sized enterprises ",
+              marks: [],
+            },
+          ],
+        },
+        {
+          object: "inline",
+          type: "cite",
+          nodes: [
+            {
+              object: "text",
+              leaves: [
+                {
+                  object: "leaf",
+                  text: "",
+                  marks: [],
+                },
+              ],
+            },
+          ],
+          data: {
+            id: 15319178,
+          },
+        },
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: " ",
+              marks: [],
+            },
+          ],
+        },
+        {
+          object: "inline",
+          type: "cite",
+          nodes: [
+            {
+              object: "text",
+              leaves: [
+                {
+                  object: "leaf",
+                  text: "",
+                  marks: [],
+                },
+              ],
+            },
+          ],
+          data: {
+            id: 15319179,
+          },
+        },
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: ". Founded in 2007 by Ari Rabban and Michael Mann ",
+              marks: [],
+            },
+          ],
+        },
+        {
+          object: "inline",
+          type: "cite",
+          nodes: [
+            {
+              object: "text",
+              leaves: [
+                {
+                  object: "leaf",
+                  text: "",
+                  marks: [],
+                },
+              ],
+            },
+          ],
+          data: {
+            id: 22888559,
+          },
+        },
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: " ",
+              marks: [],
+            },
+          ],
+        },
+        {
+          object: "inline",
+          type: "cite",
+          nodes: [
+            {
+              object: "text",
+              leaves: [
+                {
+                  object: "leaf",
+                  text: "",
+                  marks: [],
+                },
+              ],
+            },
+          ],
+          data: {
+            id: 74313877,
+          },
+        },
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: " ",
+              marks: [],
+            },
+          ],
+        },
+        {
+          object: "inline",
+          type: "cite",
+          nodes: [
+            {
+              object: "text",
+              leaves: [
+                {
+                  object: "leaf",
+                  text: "",
+                  marks: [],
+                },
+              ],
+            },
+          ],
+          data: {
+            id: 74313885,
+          },
+        },
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: ", the company is currently active and operates with a B2C business model ",
+              marks: [],
+            },
+          ],
+        },
+        {
+          object: "inline",
+          type: "cite",
+          nodes: [
+            {
+              object: "text",
+              leaves: [
+                {
+                  object: "leaf",
+                  text: "",
+                  marks: [],
+                },
+              ],
+            },
+          ],
+          data: {
+            id: 73385379,
+          },
+        },
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: " ",
+              marks: [],
+            },
+          ],
+        },
+        {
+          object: "inline",
+          type: "cite",
+          nodes: [
+            {
+              object: "text",
+              leaves: [
+                {
+                  object: "leaf",
+                  text: "",
+                  marks: [],
+                },
+              ],
+            },
+          ],
+          data: {
+            id: 14483190,
+          },
+        },
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: " ",
+              marks: [],
+            },
+          ],
+        },
+        {
+          object: "inline",
+          type: "cite",
+          nodes: [
+            {
+              object: "text",
+              leaves: [
+                {
+                  object: "leaf",
+                  text: "",
+                  marks: [],
+                },
+              ],
+            },
+          ],
+          data: {
+            id: 14536555,
+          },
+        },
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: ".",
+              marks: [],
+            },
+          ],
+        },
+      ],
+      data: {},
+    },
+    {
+      object: "block",
+      type: "paragraph",
+      nodes: [
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: "",
+              marks: [],
+            },
+          ],
+        },
+      ],
+      data: {},
+    },
+  ];
+  const slateWithMappedCites = [
+    {
+      object: "block",
+      type: "heading",
+      nodes: [
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: "Overview",
+              marks: [],
+            },
+          ],
+        },
+      ],
+      data: {},
+    },
+    {
+      object: "block",
+      type: "paragraph",
+      nodes: [
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: "Phone.com is a company that specializes in providing VoIP, video conferencing, and telecommunications services to small- and medium-sized enterprises ",
+              marks: [],
+            },
+          ],
+        },
+        {
+          object: "inline",
+          type: "cite",
+          nodes: [
+            {
+              object: "text",
+              leaves: [
+                {
+                  object: "leaf",
+                  text: "",
+                  marks: [],
+                },
+              ],
+            },
+          ],
+          data: {
+            id: 1,
+          },
+        },
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: " ",
+              marks: [],
+            },
+          ],
+        },
+        {
+          object: "inline",
+          type: "cite",
+          nodes: [
+            {
+              object: "text",
+              leaves: [
+                {
+                  object: "leaf",
+                  text: "",
+                  marks: [],
+                },
+              ],
+            },
+          ],
+          data: {
+            id: 1,
+          },
+        },
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: ". Founded in 2007 by Ari Rabban and Michael Mann ",
+              marks: [],
+            },
+          ],
+        },
+        {
+          object: "inline",
+          type: "cite",
+          nodes: [
+            {
+              object: "text",
+              leaves: [
+                {
+                  object: "leaf",
+                  text: "",
+                  marks: [],
+                },
+              ],
+            },
+          ],
+          data: {
+            id: 1,
+          },
+        },
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: " ",
+              marks: [],
+            },
+          ],
+        },
+        {
+          object: "inline",
+          type: "cite",
+          nodes: [
+            {
+              object: "text",
+              leaves: [
+                {
+                  object: "leaf",
+                  text: "",
+                  marks: [],
+                },
+              ],
+            },
+          ],
+          data: {
+            id: 1,
+          },
+        },
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: " ",
+              marks: [],
+            },
+          ],
+        },
+        {
+          object: "inline",
+          type: "cite",
+          nodes: [
+            {
+              object: "text",
+              leaves: [
+                {
+                  object: "leaf",
+                  text: "",
+                  marks: [],
+                },
+              ],
+            },
+          ],
+          data: {
+            id: 1,
+          },
+        },
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: ", the company is currently active and operates with a B2C business model ",
+              marks: [],
+            },
+          ],
+        },
+        {
+          object: "inline",
+          type: "cite",
+          nodes: [
+            {
+              object: "text",
+              leaves: [
+                {
+                  object: "leaf",
+                  text: "",
+                  marks: [],
+                },
+              ],
+            },
+          ],
+          data: {
+            id: 1,
+          },
+        },
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: " ",
+              marks: [],
+            },
+          ],
+        },
+        {
+          object: "inline",
+          type: "cite",
+          nodes: [
+            {
+              object: "text",
+              leaves: [
+                {
+                  object: "leaf",
+                  text: "",
+                  marks: [],
+                },
+              ],
+            },
+          ],
+          data: {
+            id: 1,
+          },
+        },
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: " ",
+              marks: [],
+            },
+          ],
+        },
+        {
+          object: "inline",
+          type: "cite",
+          nodes: [
+            {
+              object: "text",
+              leaves: [
+                {
+                  object: "leaf",
+                  text: "",
+                  marks: [],
+                },
+              ],
+            },
+          ],
+          data: {
+            id: 1,
+          },
+        },
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: ".",
+              marks: [],
+            },
+          ],
+        },
+      ],
+      data: {},
+    },
+    {
+      object: "block",
+      type: "paragraph",
+      nodes: [
+        {
+          object: "text",
+          leaves: [
+            {
+              object: "leaf",
+              text: "",
+              marks: [],
+            },
+          ],
+        },
+      ],
+      data: {},
+    },
+  ];
+  const toSlateProcessor = unified().use(markdown).use(remarkToGoldenSlate);
+
+  it("converts", () => {
+    const slateNodes = toSlateProcessor.processSync(md).result;
+    expect(slateNodes).toStrictEqual(slate);
+  });
+
+  it("mapGoldenSlateCiteIDs", async () => {
+    const citeIdMapFunction = async (_id: number) => {
+      return 1;
+    };
+    expect(
+      await mapGoldenSlateCiteIDs(slate as GoldenNode[], citeIdMapFunction)
+    ).toStrictEqual(slateWithMappedCites);
   });
 });

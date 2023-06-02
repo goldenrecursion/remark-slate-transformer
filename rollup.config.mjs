@@ -6,7 +6,8 @@ export default {
   output: [
     {
       file: pkg.main,
-      format: "cjs",
+      name: 'remarkSlateTransformer',
+      format: "umd",
       sourcemap: true,
     },
     {

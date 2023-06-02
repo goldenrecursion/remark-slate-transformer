@@ -105,7 +105,6 @@ const buildHeading = (
     5: "paragraph",
     6: "paragraph",
   };
-  console.log({ depth });
   return {
     type: typeByDepth[depth],
     children: convertNodes(children, deco, overrides),

@@ -146,7 +146,7 @@ const buildLink = (
   const node: {
     type: string;
     children: slate.Node[];
-    url?: string;
+    href?: string;
     id?: number;
   } = {
     type: "link",
@@ -159,7 +159,7 @@ const buildLink = (
     node.id = Number.parseInt(match?.groups?.["id"]);
     node.children = [{ text: "" }];
   } else {
-    node.url = url;
+    node.href = url;
   }
   return node;
 };

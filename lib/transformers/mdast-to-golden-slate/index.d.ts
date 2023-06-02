@@ -34,7 +34,7 @@ export type Link = ReturnType<typeof buildLink>;
 declare const buildLink: ({ children, url }: mdast.Link, deco: Decoration, overrides: OverridedMdastBuilders) => {
     type: string;
     children: slate.Node[];
-    url?: string;
+    href?: string;
     id?: number;
 };
 export type SlateNode = Paragraph | Heading | Text | Link;

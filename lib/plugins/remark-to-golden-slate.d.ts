@@ -55,12 +55,9 @@ type CustomText = {
 };
 export type GoldenNode = {
     object: "inline" | "block";
-    kind?: string;
-    type: string;
+    type: typeof TYPES[number];
     data: Omit<CustomElement, "type" | "children">;
     nodes: (GoldenNode | GoldenTextNode)[];
-    inserted?: boolean;
-    deleted?: boolean;
 };
 type GoldenTextNode = {
     object: "text";
@@ -107,5 +104,7 @@ export declare const MARK: {
     readonly subScript: "subscript";
 };
 export declare const BLOCK_TYPES: ("paragraph" | "heading" | "table" | "code" | "math" | "image" | "subheading" | "subheading2" | "bulleted-list" | "numbered-list" | "list-item" | "video" | "entity-table" | "block-quote" | "query-view" | "list-view" | "link-block")[];
+export declare const INLINE_TYPES: ("link" | "cite" | "internal-link" | "math-inline")[];
+declare const TYPES: ("paragraph" | "heading" | "table" | "code" | "math" | "link" | "image" | "subheading" | "subheading2" | "cite" | "bulleted-list" | "numbered-list" | "list-item" | "video" | "entity-table" | "block-quote" | "query-view" | "list-view" | "link-block" | "internal-link" | "math-inline")[];
 declare const plugin: Plugin<[], mdast.Root, slate.Node[]>;
 export default plugin;

@@ -55,12 +55,12 @@ const buildSlateNode = (
   node: mdast.Content,
   deco: Decoration,
   overrides: OverridedMdastBuilders
-): SlateNode[] => {
+): slate.Node[] => {
   const customNode = overrides[node.type]?.(node as any, (children) =>
     convertNodes(children, deco, overrides)
   );
   if (customNode != null) {
-    return [customNode as SlateNode];
+    return [customNode as slate.Node];
   }
 
   switch (node.type) {
@@ -71,13 +71,11 @@ const buildSlateNode = (
     case "text":
       return [buildText(node.value, deco)];
     case "link":
-      return [buildLink(node, deco, overrides)];
+      return buildLink(node, deco, overrides);
     default:
       return [];
   }
 };
-
-export type Paragraph = ReturnType<typeof buildParagraph>;
 
 const buildParagraph = (
   { type, children }: mdast.Paragraph,
@@ -89,8 +87,6 @@ const buildParagraph = (
     children: convertNodes(children, deco, overrides),
   };
 };
-
-export type Heading = ReturnType<typeof buildHeading>;
 
 const buildHeading = (
   { children, depth }: mdast.Heading,
@@ -111,16 +107,12 @@ const buildHeading = (
   };
 };
 
-export type Text = ReturnType<typeof buildText>;
-
 const buildText = (text: string, deco: Decoration) => {
   return {
     ...deco,
     text,
   };
 };
-
-export type Link = ReturnType<typeof buildLink>;
 
 const getTextFromNode = (
   node: { text: string } | { children: slate.Node[] }
@@ -138,29 +130,20 @@ const getTextFromNode = (
 };
 
 const buildLink = (
-  { children, url }: mdast.Link,
+  mdNode: mdast.Link,
   deco: Decoration,
   overrides: OverridedMdastBuilders
 ) => {
-  const node: {
-    type: string;
-    children: slate.Node[];
-    href?: string;
-    id?: number;
-  } = {
-    type: "link",
-    children: convertNodes(children, deco, overrides),
-  };
-  const text = getTextFromNode(node);
+  const children = convertNodes(mdNode.children, deco, overrides);
+  const text = getTextFromNode({children})
   const match = /^\((?<id>\d+)\)$/g.exec(text);
   if (match?.groups?.["id"]) {
-    node.type = "cite";
-    node.id = Number.parseInt(match?.groups?.["id"]);
-    node.children = [{ text: "" }];
+    return [{
+      type: "cite",
+      children: [{ text: "" }],
+      id: Number.parseInt(match?.groups?.["id"]),
+    }]
   } else {
-    node.href = url;
+    return children
   }
-  return node;
 };
-
-export type SlateNode = Paragraph | Heading | Text | Link;

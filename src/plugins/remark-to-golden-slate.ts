@@ -57,12 +57,9 @@ type CustomText = {
 
 export type GoldenNode = {
   object: "inline" | "block";
-  kind?: string;
-  type: string;
+  type: typeof TYPES[number];
   data: Omit<CustomElement, "type" | "children">;
   nodes: (GoldenNode | GoldenTextNode)[];
-  inserted?: boolean;
-  deleted?: boolean;
 };
 
 type GoldenTextNode = {
@@ -111,34 +108,37 @@ export const MARK = {
   subScript: "subscript",
 } as const;
 export const BLOCK_TYPES = Object.values(BLOCK);
+export const INLINE_TYPES = Object.values(INLINE);
+const TYPES = [...BLOCK_TYPES, ...INLINE_TYPES]
 
 const childToGolden = (node: CustomElement): GoldenNode => {
   const { type, children, ...data } = node;
   const newNode: GoldenNode = {
     object: BLOCK_TYPES.includes(type) ? "block" : "inline",
     type,
-    nodes: children?.reduce((arr, child) => {
+    nodes: (children || []).reduce((arr, child) => {
       if ("children" in child) {
         arr.push(childToGolden(child as CustomElement));
       } else {
         const lastNode = arr[arr.length - 1];
-        const { text, ...marks } = child as CustomText;
+        const { text} = child as CustomText;
 
         const leaves: GoldenTextNode["leaves"][number][] = [
           {
             object: "leaf",
             text,
-            marks: Object.keys(marks).map((type) => ({
-              object: "mark",
-              type,
-              data: {},
-            })),
+            marks: []
           },
         ];
 
         if (lastNode && "leaves" in lastNode) {
           // merge neighboring text nodes
-          lastNode.leaves.push(...leaves);
+          const lastLeave = lastNode.leaves.at(-1)
+          if (!lastLeave) {
+            lastNode.leaves.push(...leaves);
+          } else {
+            lastLeave.text += text;
+          }
         } else {
           arr.push({
             object: "text",

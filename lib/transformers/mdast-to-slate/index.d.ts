@@ -20,7 +20,7 @@ declare const buildParagraph: ({ type, children }: mdast.Paragraph, deco: Decora
 export type Heading = ReturnType<typeof buildHeading>;
 declare const buildHeading: ({ type, children, depth }: mdast.Heading, deco: Decoration, overrides: OverridedMdastBuilders) => {
     type: "heading";
-    depth: 3 | 1 | 2 | 4 | 5 | 6;
+    depth: 1 | 2 | 3 | 4 | 5 | 6;
     children: slate.Node[];
 };
 export type ThematicBreak = ReturnType<typeof buildThematicBreak>;

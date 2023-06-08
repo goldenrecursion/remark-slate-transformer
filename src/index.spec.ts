@@ -273,7 +273,7 @@ describe("issues", () => {
 describe("slate to Golden slate", () => {
   const md = ` ## Overview
 
-Phone.com is a company that specializes in providing VoIP, video conferencing, and telecommunications services to small- and medium-sized enterprises [(15319178)](#industry) [(15319179)](#industry). Founded in 2007 by Ari Rabban and Michael Mann [(22888559)](#founded_date) [(74313877)](#founder) [(74313885)](#founder), the company is currently active and operates with a B2C business model [(73385379)](#is_a) [(14483190)](#company_operating_status) [(14536555)](#b2x).`;
+Phone.com is a company that specializes in providing VoIP, video conferencing, and [telecommunications](https://foo.com) services to small- and medium-sized enterprises [(15319178)](#industry) [(15319179)](#industry). Founded in 2007 by Ari Rabban and Michael Mann [(22888559)](#founded_date) [(74313877)](#founder) [(74313885)](#founder), the company is currently active and operates with a B2C business model [(73385379)](#is_a) [(14483190)](#company_operating_status) [(14536555)](#b2x).`;
   const slate = [
     {
       object: "block",
